@@ -1,6 +1,6 @@
 package DataAccess;
 
-public class User {
+public class eventLocation {
 
     private String country;
     private String city;
@@ -8,9 +8,9 @@ public class User {
     private Float longitude;
 
     //Used for deserialization
-    private User(){}
+    private eventLocation(){}
 
-    public User(String country, String city
+    public eventLocation(String country, String city
     , Float latitude, Float longitude) {
         this.country = country;
         this.city = city;

@@ -47,6 +47,7 @@ public class Fill {
 
         } catch (DataAccessException e) {
             e.printStackTrace();
+
             throw new DataAccessException("Could not clear the username from PDAO in Fill");
         }
 

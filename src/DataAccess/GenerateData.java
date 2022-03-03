@@ -49,7 +49,7 @@ public class GenerateData {
             listOfPeople.add(father);
             //Add the rest of the info
 
-            User marriageLocation = getRandomLocation();
+            eventLocation marriageLocation = getRandomLocation();
             int marriageYear = generateYear(generations, "Married");
             //Insert Father Marraige
             Event marEventFather = new Event(UUID.randomUUID().toString(), user.getUsername(), father.getPersonID(), marriageLocation.getLatitude(), marriageLocation.getLongitude(),
@@ -68,7 +68,7 @@ public class GenerateData {
             //For the oldest generation
             Person personSingle = new Person(UUID.randomUUID().toString(), user.getUsername(), getRandomName("first"), getRandomName("last"),gender.toString().toLowerCase(), "none", "none", null);
             generationNum.add(generations);
-            User location = getRandomLocation();
+            eventLocation location = getRandomLocation();
             Event birth = new Event(UUID.randomUUID().toString(), user.getUsername(), personSingle.getPersonID(), location.getLatitude(), location.getLongitude(),
                     location.getCountry(), location.getCity(), "Born", generateYear(generations, "Birth"));
             addEvents.insert(birth);
@@ -83,7 +83,7 @@ public class GenerateData {
             Person personSingle = new Person(UUID.randomUUID().toString(), user.getUsername(), user.getFirstName(), user.getLastName(),gender.toString().toLowerCase(), father.getPersonID(), mother.getPersonID(), null);
             listOfPeople.add(personSingle);
             generationNum.add(generations);
-            User location = getRandomLocation();
+            eventLocation location = getRandomLocation();
             Event birth = new Event(UUID.randomUUID().toString(), user.getUsername(), personSingle.getPersonID(), location.getLatitude(), location.getLongitude(),
                     location.getCountry(), location.getCity(), "Born", generateYear(generations, "Birth"));
             addEvents.insert(birth);
@@ -94,7 +94,7 @@ public class GenerateData {
                     mother.getSpouseID());
             // listOfPeople.add(person);
             generationNum.add(generations);
-            User location = getRandomLocation();
+            eventLocation location = getRandomLocation();
             Event birth = new Event(UUID.randomUUID().toString(), user.getUsername(), person.getPersonID(), location.getLatitude(), location.getLongitude(),
                     location.getCountry(), location.getCity(), "Born", generateYear(generations, "Birth"));
             addEvents.insert(birth);
@@ -386,10 +386,10 @@ public class GenerateData {
 
     }
 
-    public User getRandomLocation() throws FileNotFoundException {
+    public eventLocation getRandomLocation() throws FileNotFoundException {
 
         LocationList.LocationListStatic ff = new LocationList.LocationListStatic();
-        User newLocation = ff.getRandom();
+        eventLocation newLocation = ff.getRandom();
 
         return newLocation;
     }

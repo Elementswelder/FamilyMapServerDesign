@@ -41,6 +41,7 @@ public class Load {
 
         JsonObject root = (JsonObject)jsonParser.parse(data);
         JsonArray personArray = (JsonArray) root.get("users");
+
         for (int i = 0; i < personArray.size(); i++){
 
 

@@ -1,27 +1,29 @@
 package DataAccess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class LocationList {
     public static class LocationListStatic {
 
-        private User[] data;
-        private static User[] dataStatic;
+        private eventLocation[] data;
+        private static eventLocation[] dataStatic;
 
         public LocationListStatic() {
 
         }
 
-        public User[] getData() {
+        public eventLocation[] getData() {
 
             return data;
         }
 
-        public void setData(User[] data) {
+        public void setData(eventLocation[] data) {
             this.data = data;
         }
 
-        public User getRandom() {
+        public eventLocation getRandom() {
             int listSize = dataStatic.length;
             Random rand = new Random();
 

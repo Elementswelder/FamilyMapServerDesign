@@ -1,6 +1,7 @@
 package DataLoading;
 
-import DataAccess.User;
+import DataAccess.eventLocation;
+import Model.User;
 
 import java.util.Random;
 
