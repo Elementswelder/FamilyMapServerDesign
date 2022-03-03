@@ -44,7 +44,7 @@ public class Server {
 
         System.out.println("Creating Contexts");
 
-
+            System.out.println("GITHHUB TEST");
         server.createContext("/user/register", new userRegisterHandle());
 
         server.createContext("/user/login", new userLoginHandle());
