@@ -1,6 +1,5 @@
 package DataAccess;
 
-import Model.Person;
 import Model.User;
 
 import java.sql.Connection;
@@ -15,13 +14,15 @@ import java.util.UUID;
  * Class for the User Object
  */
 public class UserDao {
+
     private final Connection connect;
 
     /**
-     * User constructer to set the connection for the transfer
+     * User constructor to set the connection for the transfer
      * @param connect the connection URL
      */
     public UserDao(Connection connect) {
+
         this.connect = connect;
     }
 
@@ -44,23 +45,11 @@ public class UserDao {
 
             statement.executeUpdate();
 
-            String authtoken = UUID.randomUUID().toString();
-            return authtoken;
+            return UUID.randomUUID().toString();
         } catch (SQLException ex) {
             throw new DataAccessException("Error while inserting into the database");
         }
 
-    }
-
-    /**
-     * A method that will verify that a user actually exists and is valid
-     * @param username the username
-     * @param password the password
-     * @return If the user is valid or not
-     */
-    public boolean validateUser (String username, String password){
-
-        return false;
     }
 
     /**
@@ -71,14 +60,14 @@ public class UserDao {
      */
     public User findUser(String username) throws DataAccessException {
         User user;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
         String sql = "SELECT * FROM User WHERE username = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, username);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             if (rs.next()) {
                 user = new User(rs.getString("username"), rs.getString("password"), rs.getString("email"),
                         rs.getString("firstName"),rs.getString("lastName"), rs.getString("gender"), rs.getString("personID"));
@@ -91,7 +80,7 @@ public class UserDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding person");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -107,21 +96,21 @@ public class UserDao {
 
     /**
      * List of all users connected to a personID
-     * @param personID the ID that will look for the people with
+     * @param username the username that will look for the people with
      * @return Return a Set of all users that are connected
      * @throws DataAccessException Throw this if the connection did not work
      */
-        public Set<User> listOfUsers(String personID) throws DataAccessException {
+        public Set<User> listOfUsers(String username) throws DataAccessException {
             Set<User> listOfUsers = new HashSet<>();
             User user;
-            //Resultset is the result of the Find.
+            //Result set is the result of the Find.
             ResultSet rs = null;
-            String sql = "SELECT * FROM User WHERE personID = ?;";
+            String sql = "SELECT * FROM User WHERE username = ?;";
             try (PreparedStatement statement = connect.prepareStatement(sql)) {
-                statement.setString(1, personID);
+                statement.setString(1, username);
                 //RS is taking the result of the search after the Query is executed
                 rs = statement.executeQuery();
-                //If RS Exsists
+                //If RS Exists
                 while(rs.next()){
                     user = new User(rs.getString("username"), rs.getString("password"),
                             rs.getString("email"), rs.getString("firstName"), rs.getString("lastName"),
@@ -133,7 +122,7 @@ public class UserDao {
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 throw new DataAccessException("Error while finding the list of PERSON");
-                //Finally meaning do this no matter what
+                //Finally, meaning do this no matter what
             } finally {
                 //Close the results
                 if (rs != null) {
@@ -155,14 +144,13 @@ public class UserDao {
     public Set<User> allUsers() throws DataAccessException {
             Set<User> listOfUsers = new HashSet<>();
             User user;
-            //Resultset is the result of the Find.
+            //Result set is the result of the Find.
             ResultSet rs = null;
             String sql = "SELECT * FROM User";
             try (PreparedStatement statement = connect.prepareStatement(sql)) {
-               // statement.setString(1, username);
                 //RS is taking the result of the search after the Query is executed
                 rs = statement.executeQuery();
-                //If RS Exsists
+                //If RS Exists
                 while(rs.next()){
                     user = new User(rs.getString("username"), rs.getString("password"),
                             rs.getString("email"), rs.getString("firstName"), rs.getString("lastName"),
@@ -174,7 +162,7 @@ public class UserDao {
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 throw new DataAccessException("Error while finding the list of PERSON");
-                //Finally meaning do this no matter what
+                //Finally, meaning do this no matter what
             } finally {
                 //Close the results
                 if (rs != null) {
@@ -187,16 +175,6 @@ public class UserDao {
             }
 
         }
-
-    /**
-     * Removes a single user from the database
-     * @param userID the ID of the user to remove
-     * @throws DataAccessException throw if there is no access to the database
-     */
-
-    public void clearSingleUser(String userID) throws DataAccessException{
-
-    }
 
     /**
      * Clear all the users that are in the database
@@ -279,7 +257,3 @@ public class UserDao {
         return false;
     }
 }
-
-
-//CRUD  CREATES, RECIEVES, U?, DELETE FOR ALL DOAS CLASS
-//DAO connects directly to the DataAccess.Database

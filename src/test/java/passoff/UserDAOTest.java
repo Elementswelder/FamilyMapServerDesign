@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.util.Set;
 
@@ -68,13 +67,13 @@ public class UserDAOTest {
     public void testFind() throws DataAccessException {
         User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
                 "The", "Dude", "m", "alphabeta3");
-        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
-                "The", "Dude", "m", "alphabeta3");
+        User userThree = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta");
         userDAO.insertUser(user);
         userDAO.insertUser(userTwo);
         userDAO.insertUser(userThree);
 
-        Set<User> combine = userDAO.listOfUsers(userThree.getPersonID());
+        Set<User> combine = userDAO.listOfUsers(userThree.getUsername());
         assertNotNull(combine);
         //
         assertEquals(2, combine.size());
@@ -109,8 +108,128 @@ public class UserDAOTest {
 
         Set<User> combine = userDAO.allUsers();
         assertEquals(0, combine.size());
+    }
 
+    @Test
+    public void testClearTwo() throws DataAccessException {
+        userDAO.clearUser();
+        Set<User> combine = userDAO.allUsers();
+        assertEquals(0, combine.size());
+    }
+
+    @Test
+    public void getAllPeoplePass() throws DataAccessException{
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        Set<User> list = userDAO.allUsers();
+        assertEquals(3, list.size());
+    }
+
+    @Test
+    public void getAllPeoplePassTwo() throws DataAccessException{
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        Set<User> list = userDAO.allUsers();
+        assertEquals(3, list.size());
+
+        userDAO.clearUser();
+        list = userDAO.allUsers();
+        assertEquals(0, list.size());
+
+        userDAO.insertUser(userTwo);
+        list = userDAO.allUsers();
+        assertEquals(1, list.size());
+
+        userDAO.insertUser(user);
+        list = userDAO.allUsers();
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    public void listOfUsersPass() throws DataAccessException {
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        Set<User> list = userDAO.listOfUsers("Beta2");
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void listofUsersFail() throws DataAccessException{
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        Set<User> list = userDAO.listOfUsers("test");
+        assertEquals(0, list.size());
 
     }
+
+    @Test
+    public void searchUsernamePass() throws DataAccessException {
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        assertTrue(userDAO.searchUsername("Beta2"));
+    }
+    @Test
+    public void searchUsernameFail() throws DataAccessException {
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        assertFalse(userDAO.searchUsername("Nothing"));
+    }
+
+    @Test
+    public void searchAccountPass() throws DataAccessException{
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        assertTrue(userDAO.searchAccount("Beta2", "alphabeta"));
+        assertTrue(userDAO.searchAccount("Beta3", "alphabeta"));
+    }
+    @Test
+    public void searchAccountFail() throws DataAccessException{
+        userDAO.insertUser(user);
+        User userTwo = new User("Beta2", "alphabeta", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta2");
+        User userThree = new User("Beta3", "alphabet5", "ab@gmail.com",
+                "The", "Dude", "m", "alphabeta3");
+        userDAO.insertUser(userTwo);
+        userDAO.insertUser(userThree);
+        assertFalse(userDAO.searchAccount("Beta", "alphabeta"));
+        assertFalse(userDAO.searchAccount("Beta3", "alphabe"));
+        assertFalse(userDAO.searchAccount("b", "alpha"));
+    }
+
 
 }

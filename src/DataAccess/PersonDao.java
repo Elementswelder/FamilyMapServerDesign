@@ -1,23 +1,12 @@
 package DataAccess;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import Model.Event;
 import Model.Person;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import static DataAccess.Gender.FEMALE;
-import static DataAccess.Gender.MALE;
 
 /**
  * Person Data Object class that controls the communication between the Person Object and the Database
@@ -26,7 +15,6 @@ import static DataAccess.Gender.MALE;
 public class PersonDao {
 
     private final Connection connect;
-    private String connectionURL = "jdbc:sqlite:database.db";
 
 
 
@@ -75,14 +63,14 @@ public class PersonDao {
 
     public Person findPerson(String personID) throws DataAccessException {
         Person person;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
         String sql = "SELECT * FROM Person WHERE personID = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, personID);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             if (rs.next()) {
                 person = new Person(rs.getString("personID"), rs.getString("associatedUsername"),
                         rs.getString("firstName"),rs.getString("lastName"), rs.getString("gender"), rs.getString("fatherID"),
@@ -91,12 +79,12 @@ public class PersonDao {
             }
             //Return null instead of the exception
             else if (rs.wasNull()){
-                throw new DataAccessException("There are no People assoicated with that username!");
+                throw new DataAccessException("There are no People associated with that username!");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding person");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -112,20 +100,20 @@ public class PersonDao {
 
     /**
      * Return a list of people
-     * @param theUser the ID of the user that is assocaiated with the
+     * @param theUser the ID of the user that is associated with the
      * @return The list of Persons attached to a certain user
      */
-    public Set<Person> listofPersons(String theUser) throws DataAccessException {
+    public Set<Person> listOfPersons(String theUser) throws DataAccessException {
         Set<Person> listOfPersons = new HashSet<>();
         Person person;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
         String sql = "SELECT * FROM Person WHERE associatedUsername = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, theUser);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             while(rs.next()){
                 person = new Person(rs.getString("personID"), rs.getString("associatedUsername"),
                         rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"),
@@ -137,7 +125,7 @@ public class PersonDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding the list of PERSON");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -153,7 +141,7 @@ public class PersonDao {
 
     /**
      * Removes a single person from the database
-     * @param personID the ID of the person to remove
+     * @param username the ID of the person to remove
      * @throws DataAccessException throw if there is no access to the database
      */
 
@@ -177,14 +165,14 @@ public class PersonDao {
     public Set<Person> getAllPeople() throws DataAccessException {
         Set<Person> listOfPersons = new HashSet<>();
         Person person;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
         String sql = "SELECT * FROM Person";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             //statement.setString(1, theUser);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             while(rs.next()){
                 person = new Person(rs.getString("personID"), rs.getString("associatedUsername"),
                         rs.getString("firstName"), rs.getString("lastName"), rs.getString("gender"),
@@ -196,7 +184,7 @@ public class PersonDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding the list of PERSON");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -212,7 +200,7 @@ public class PersonDao {
 
     /**
      * Clears the person table from the database
-     * @throws DataAccessException throws the approciate error if cannot connect
+     * @throws DataAccessException throws the appropriate error if it cannot connect
      */
     public void clearPersonTable() throws DataAccessException {
         String sql = "DELETE from Person";
@@ -227,7 +215,7 @@ public class PersonDao {
         }
 
     }
-    public boolean searchPersonID(String id) throws DataAccessException {
+    public boolean searchPersonID(String id) {
         ResultSet rs = null;
         String sql = "SELECT * FROM Person WHERE personID = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)){
@@ -237,10 +225,10 @@ public class PersonDao {
 
             if (rs.next()){
                 rs.close();
-                return false;
+                return true;
 
             } else {
-                return true;
+                return false;
             }
 
         } catch (SQLException e) {
@@ -260,8 +248,3 @@ public class PersonDao {
 
 
 }
-
-
-
-//CRUD  CREATES, RECIEVES, U?, DELETE FOR ALL DOAS CLASS
-//DAO connects directly to the DataAccess.Database

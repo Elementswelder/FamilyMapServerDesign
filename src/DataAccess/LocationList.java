@@ -1,29 +1,27 @@
 package DataAccess;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class LocationList {
     public static class LocationListStatic {
 
-        private eventLocation[] data;
-        private static eventLocation[] dataStatic;
+        private EventLocation[] data;
+        private static EventLocation[] dataStatic;
 
-        public LocationListStatic() {
+        //Using a static class so that the GSON imports correctly
+        public LocationListStatic() {}
 
-        }
-
-        public eventLocation[] getData() {
+        public EventLocation[] getData() {
 
             return data;
         }
 
-        public void setData(eventLocation[] data) {
+        public void setData(EventLocation[] data) {
+
             this.data = data;
         }
 
-        public eventLocation getRandom() {
+        public EventLocation getRandom() {
             int listSize = dataStatic.length;
             Random rand = new Random();
 
@@ -34,6 +32,7 @@ public class LocationList {
         }
 
         public void setStatic(){
+
             dataStatic = data;
         }
     }

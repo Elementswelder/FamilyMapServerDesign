@@ -8,13 +8,16 @@ import java.util.Objects;
  */
 public class Person {
     private String personID;
-    private String username;
+    private String associatedUsername;
     private String firstName;
     private String lastName;
     private String gender;
     private String fatherID;
     private String motherID;
     private String spouseID;
+
+
+    private Person() {}
 
     /**
      * The constructor of a person to an object
@@ -27,10 +30,12 @@ public class Person {
      * @param motherID the mother (if any) of the person
      * @param spouseID the spouse (if any) of the person
      */
+
+
     public Person(String personID, String username, String firstName, String lastName,
                   String gender, String fatherID, String motherID, String spouseID){
         this.personID = personID;
-        this.username = username;
+        this.associatedUsername = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -48,11 +53,11 @@ public class Person {
     }
 
     public String getUsername() {
-        return username;
+        return associatedUsername;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.associatedUsername = username;
     }
 
     public String getFirstName() {

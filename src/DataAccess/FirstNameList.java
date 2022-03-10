@@ -11,16 +11,17 @@ import java.util.Random;
 
          private static List<String> fNameList = new ArrayList<String>();
 
-
+        //Using firstNameStatic so that GSON imports correctly
          public firstNameStatic(){}
 
-
+         //Add all first names to the list
          public firstNameStatic(JsonArray list) {
              for (int i = 0; i < list.size(); i++) {
                  fNameList.add(list.get(i).toString());
              }
          }
 
+        //Return a random firstName
          public String getRandomFirstName() {
              int listSize = fNameList.size();
              Random rand = new Random();

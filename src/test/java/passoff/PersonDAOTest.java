@@ -32,7 +32,7 @@ public class PersonDAOTest {
         Connection conn = db.getConnection();
         //Let's clear the database as well so any lingering data doesn't affect our tests
         db.clearTables();
-        //Then we pass that connection to the EventDAO so it can access the database
+        //Then we pass that connection to the PersonDAO so it can access the database
         personDAO = new PersonDao(conn);
     }
 
@@ -74,7 +74,7 @@ public class PersonDAOTest {
         personDAO.insertPerson(personTwo);
         personDAO.insertPerson(personThree);
 
-        Set<Person> combine = personDAO.listofPersons(personTwo.getUsername());
+        Set<Person> combine = personDAO.listOfPersons(personTwo.getUsername());
         assertNotNull(combine);
         //
         assertEquals(2, combine.size());
@@ -116,6 +116,167 @@ public class PersonDAOTest {
 
 
     }
+
+    @Test
+    public void testClearTwo() throws DataAccessException {
+        personDAO.clearPersonTable();
+
+        Set<Person> combine = personDAO.getAllPeople();
+        assertEquals(0, combine.size());
+
+
+    }
+
+    @Test
+    public void listPersonsPass() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personTwo);
+        personDAO.insertPerson(personThree);
+        Set<Person> listPerson = personDAO.listOfPersons("Superperson2");
+        assertEquals(2, listPerson.size());
+    }
+
+    @Test
+    public void listPersonsFail() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        Set<Person> listPerson = personDAO.listOfPersons("Test");
+        assertEquals(0, listPerson.size());
+    }
+
+    @Test
+    public void associatedUsernamePass() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        Set<Person> list = personDAO.getAllPeople();
+        assertEquals(3, list.size());
+
+        personDAO.clearAssociatedUsername("Superperson2");
+        list = personDAO.getAllPeople();
+        assertEquals(1, list.size());
+
+    }
+
+    @Test
+    public void associatedUsernamePassTwo() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        Set<Person> list = personDAO.getAllPeople();
+        assertEquals(3, list.size());
+
+        personDAO.clearAssociatedUsername("Superperson2");
+        list = personDAO.getAllPeople();
+        assertEquals(1, list.size());
+
+        personDAO.clearAssociatedUsername("Superperson");
+        list = personDAO.getAllPeople();
+        assertEquals(0, list.size());
+
+    }
+
+    @Test
+    public void getAllPeoplePass() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        Set<Person> list = personDAO.getAllPeople();
+        assertEquals(3, list.size());
+
+    }
+
+    @Test
+    public void getAllPeoplePassTwo() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        Set<Person> list = personDAO.getAllPeople();
+        assertEquals(3, list.size());
+
+        personDAO.clearAssociatedUsername("Superperson");
+        list = personDAO.getAllPeople();
+        assertEquals(2, list.size());
+
+        personDAO.clearAssociatedUsername("Superperson2");
+        list = personDAO.getAllPeople();
+        assertEquals(0, list.size());
+
+        personDAO.insertPerson(person);
+        list = personDAO.getAllPeople();
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void searchPersonPass() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        boolean search = personDAO.searchPersonID("Alpha2");
+        assertTrue(search);
+
+
+    }
+
+    @Test
+    public void searchPersonFail() throws DataAccessException{
+        personDAO.insertPerson(person);
+        Person personTwo = new Person("Alpha2", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        Person personThree = new Person("Alpha3", "Superperson2", "The",
+                "Best", "m", "Superman", "Superwoman",
+                "Perfect");
+        personDAO.insertPerson(personThree);
+        personDAO.insertPerson(personTwo);
+        boolean search = personDAO.searchPersonID("Alpha5");
+        assertFalse(search);
+
+    }
+
 
 
 }

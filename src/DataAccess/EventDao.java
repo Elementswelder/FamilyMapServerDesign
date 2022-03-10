@@ -1,17 +1,8 @@
 package DataAccess;
 
 import Model.Event;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.sql.*;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -20,10 +11,10 @@ import java.util.Set;
 public class EventDao {
 
     private final Connection connect;
-    private String connectionURL = "jdbc:sqlite:database.sqkute";
+   // private final String connectionURL = "jdbc:sqlite:database.db";
 
     /**
-     * A constructer to connecect to the database
+     * A constructor to connect to the database
      * @param connect the connection to the database
      */
 
@@ -37,7 +28,7 @@ public class EventDao {
      * @throws DataAccessException Throw this if there is no access
      */
     public void insert(Event event) throws DataAccessException {
-
+        //Insert a new event parameter into the database
         String sql = "INSERT INTO Event (EventID, AssociatedUsername, PersonID, Latitude, Longitude, " +
                 "Country, City, EventType, Year) VALUES(?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
@@ -50,30 +41,30 @@ public class EventDao {
             statement.setString(7, event.getCity());
             statement.setString(8, event.getEventType());
             statement.setInt(9, event.getYear());
-
             statement.executeUpdate();
         } catch (SQLException ex) {
+            //If there is an error adding throw exception
+            System.out.println("Error in EventDAO INSERT");
             throw new DataAccessException("Error while inserting into the database");
         }
-
     }
 
     /**
-     * Find an event within the data base
+     * Find an event within the database
      * @param eventID The ID to identify the event
      * @return return the found Event if any
      * @throws DataAccessException Throw this if you are unable to connect
      */
     public Event find(String eventID) throws DataAccessException {
         Event event;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
-        String sql = "SELECT * FROM Event WHERE EventID = ?;";
+        String sql = "SELECT * FROM Event WHERE eventID = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setString(1, eventID);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             if (rs.next()) {
                 event = new Event(rs.getString("EventID"), rs.getString("AssociatedUsername"),
                         rs.getString("PersonID"), rs.getFloat("Latitude"), rs.getFloat("Longitude"),
@@ -84,7 +75,7 @@ public class EventDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding event");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -99,7 +90,7 @@ public class EventDao {
     }
     /**
      * Removes a single event from the database
-     * @param eventID the ID of the event to remove
+     * @param username the ID of the event to remove
      * @throws DataAccessException throw if there is no access to the database
      */
 
@@ -121,40 +112,22 @@ public class EventDao {
     }
 
     /**
-     * Clear out all the events if needed
-     * @throws DataAccessException Throw if unable to connect
-     */
-    public void clearEvent() throws DataAccessException {
-        String sql = "DELETE FROM Event";
-
-        try (PreparedStatement statement = connect.prepareStatement(sql)){
-            statement.executeUpdate();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new DataAccessException("Error while clearing Event");
-        }
-
-
-    }
-
-    /**
-     * A method that calls and returns all of the events for all family memebrs under a certin user
-     * @param personID The userID to find the events
+     * A method that calls and returns all the events for all family members under a certain user
+     * @param username The username to find the events
      * @return return the list of events
      * @throws DataAccessException Throw if you cannot access the data
      */
-    public Set<Event> listEvents(String personID) throws DataAccessException{
+    public Set<Event> listEvents(String username) throws DataAccessException{
         Set<Event> listOfEvents = new HashSet<>();
         Event event;
-        //Resultset is the result of the Find.
+        //Result set is the result of the Find.
         ResultSet rs = null;
-        String sql = "SELECT * FROM Event WHERE personID = ?;";
+        String sql = "SELECT * FROM Event WHERE associatedUsername = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
-            statement.setString(1, personID);
+            statement.setString(1, username);
             //RS is taking the result of the search after the Query is executed
             rs = statement.executeQuery();
-            //If RS Exsists
+            //If RS Exists
             while(rs.next()){
                 event = new Event(rs.getString("EventID"), rs.getString("AssociatedUsername"),
                         rs.getString("PersonID"), rs.getFloat("Latitude"), rs.getFloat("Longitude"),
@@ -167,7 +140,7 @@ public class EventDao {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DataAccessException("Error while finding the list of events");
-            //Finally meaning do this no matter what
+            //Finally, meaning do this no matter what
         } finally {
             //Close the results
             if (rs != null) {
@@ -179,11 +152,5 @@ public class EventDao {
             }
         }
     }
-
-
-
-
 }
 
-//CRUD  CREATES, RECIEVES, U?, DELETE FOR ALL DOAS CLASS
-//DAO connects directly to the DataAccess.Database

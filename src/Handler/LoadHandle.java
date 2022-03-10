@@ -2,13 +2,10 @@ package Handler;
 
 import DataAccess.DataAccessException;
 import Request.LoadRequest;
-import Request.userRegisterRequest;
-import Response.loadResponse;
-import Response.userRegisterResponse;
+import Response.LoadResponse;
 import Service.Load;
-import Service.userRegister;
 import com.google.gson.Gson;
-import com.sun.net.httpserver.Headers;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -19,45 +16,35 @@ import java.net.HttpURLConnection;
 public class LoadHandle implements HttpHandler {
 
     @Override
+    //Set up the handle for Load
     public void handle(HttpExchange exchange) throws IOException {
 
         boolean success = false;
 
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("post")) {
+            if (exchange.getRequestMethod().equalsIgnoreCase("post")) {
                 //Setup the Vars for the handle
-                Headers reqHeaders = exchange.getRequestHeaders();
                 InputStream reqBody = exchange.getRequestBody();
                 String reqData = readString(reqBody);
-
+                LoadResponse response;
                 System.out.println(reqData);
-                //Setup the gson translation
                 Gson gson = new Gson();
-                LoadRequest loadRequest = gson.fromJson(reqData, LoadRequest.class);
+                LoadRequest loadTwo = gson.fromJson(reqData, LoadRequest.class);
                 //Clears the Database with Clear
-                Load load = new Load();
-                load.loadDatabase(reqData);
+                Load load = new Load(loadTwo);
+                response = load.startLoading();
 
-                loadResponse response = load.getResponse();
                 OutputStream resBody;
                 String responseData;
+                Gson gsonT = new GsonBuilder().setPrettyPrinting().create();
                 if (response.isValidate()){
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-                    resBody = exchange.getResponseBody();
-                    responseData =
-                            "{ \"authtoken\": \"" +"\"," +
-                                    "\"username\": \""  + "\"," +
-                                    "\"personID\":\"" + "\"," +
-                                    "\"success\":\"true\" } ";
-
                 } else {
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-                    resBody = exchange.getResponseBody();
-                    responseData =
-                            "{ \"message\": \"" + response.getMessage() +"\"," +
-                                    "\"success\":\"false\" } ";
-
                 }
+                //Send and write the response back
+                resBody = exchange.getResponseBody();
+                responseData = gsonT.toJson(response);
                 writeString(responseData, resBody);
                 System.out.println(responseData);
                 reqBody.close();
@@ -99,7 +86,6 @@ public class LoadHandle implements HttpHandler {
 
     private void writeString(String str, OutputStream os) throws IOException {
         OutputStreamWriter sw = new OutputStreamWriter(os);
-        // BufferedWriter bw = new BufferedWriter(sw);
         sw.write(str);
         sw.flush();
     }

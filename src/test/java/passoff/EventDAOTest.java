@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +26,10 @@ public class EventDAOTest {
         //lets create a new database
         db = new Database();
         //and a new event with random data
-        bestEvent = new Event("Biking_123A", "Gale", "Gale123A",
+        bestEvent = new Event("Biking_123", "Gale", "Gale123",
                 35.9f, 140.1f, "Japan", "Ushiku",
                 "Biking_Around", 2016);
+
         //Here, we'll open the connection in preparation for the test case to use it
         Connection conn = db.getConnection();
         //Let's clear the database as well so any lingering data doesn't affect our tests
@@ -72,4 +74,67 @@ public class EventDAOTest {
         //comes after the "()->" and expects it to throw an instance of the class in the first parameter.
         assertThrows(DataAccessException.class, ()-> eDao.insert(bestEvent));
     }
+
+    @Test
+    public void findPass() throws DataAccessException {
+        eDao.insert(bestEvent);
+        Event compare = eDao.find(bestEvent.getEventID());
+        assertNotNull(compare);
+        assertEquals(bestEvent, compare);
+    }
+
+    @Test
+    public void findFail() throws DataAccessException{
+        eDao.insert(bestEvent);
+        Event compare = eDao.find("Test");
+        assertNull(compare);
+    }
+
+    @Test
+    public void clearUsernamePass() throws DataAccessException{
+        eDao.insert(bestEvent);
+        eDao.clearAssociatedUsername(bestEvent.getAssociatedUsername());
+        Set<Event> testSet = eDao.listEvents(bestEvent.getAssociatedUsername());
+        assertEquals(0, testSet.size());
+    }
+
+    @Test
+    public void clearUsernameFail() throws DataAccessException{
+        eDao.insert(bestEvent);
+       // assertThrows(DataAccessException.class, ()-> eDao.clearAssociatedUsername("test"));
+        Set<Event> testSet = eDao.listEvents(bestEvent.getAssociatedUsername());
+        assertEquals(1, testSet.size());
+    }
+
+    @Test
+    public void listEventsPass() throws DataAccessException{
+        eDao.insert(bestEvent);
+        Event newOne = new Event("Biking_124", "Gale", "Gale123",
+                35.9f, 140.1f, "Japan", "Ushiku",
+                "Biking_Around", 2016);
+        Event newTwo = new Event("Biking_125", "Gale", "Gale12",
+                35.9f, 140.1f, "Japan", "Ushiku",
+                "Biking_Around", 2016);
+        eDao.insert(newOne);
+        eDao.insert(newTwo);
+        Set<Event> listEvent = eDao.listEvents("Gale");
+        assertEquals(3, listEvent.size());
+    }
+
+    @Test
+    public void listEventsFail() throws DataAccessException{
+        eDao.insert(bestEvent);
+        Event newOne = new Event("Biking_124", "Gale", "Gale123",
+                35.9f, 140.1f, "Japan", "Ushiku",
+                "Biking_Around", 2016);
+        Event newTwo = new Event("Biking_125", "Gale", "Gale12",
+                35.9f, 140.1f, "Japan", "Ushiku",
+                "Biking_Around", 2016);
+        eDao.insert(newOne);
+        eDao.insert(newTwo);
+        Set<Event> listEvent = eDao.listEvents("Test");
+        assertEquals(0, listEvent.size());
+    }
+
+
 }

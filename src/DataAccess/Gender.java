@@ -1,6 +1,6 @@
 package DataAccess;
-
+//Gender enum for the person genders
 enum Gender {
-    MALE,
-    FEMALE
+    M,
+    F
 }

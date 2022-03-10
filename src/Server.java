@@ -1,7 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 import DataAccess.*;
@@ -42,24 +40,20 @@ public class Server {
 
         System.out.println("Data loaded successfully!");
 
+        //Create all the contexts for the server
         System.out.println("Creating Contexts");
-
-            System.out.println("GITHHUB TEST");
-        server.createContext("/user/register", new userRegisterHandle());
-
-        server.createContext("/user/login", new userLoginHandle());
-
-        server.createContext("/clear", new clearHandle());
-
-        server.createContext("/fill", new fillHandle());
-
+        server.createContext("/user/register", new UserRegisterHandle());
+        server.createContext("/user/login", new UserLoginHandle());
+        server.createContext("/clear", new ClearHandle());
+        server.createContext("/fill", new FillHandle());
         server.createContext("/load", new LoadHandle());
-
+        server.createContext("/person/", new PersonIDHandle());
+        server.createContext("/person", new PersonRRHandler());
+        server.createContext("/event/", new EventIDHandler());
+        server.createContext("/event", new EventRRHandler());
         server.createContext("/", new FileHandler());
 
-
         System.out.println("Starting server");
-
 
         server.start();
 
@@ -74,7 +68,7 @@ public class Server {
         //Load the locations into Location Class
         File fileLocation = new File("json/locations.json");
         try (FileReader fileReader = new FileReader(fileLocation)) {
-             LocationList.LocationListStatic locations = (LocationList.LocationListStatic)gson.fromJson(fileReader, LocationList.LocationListStatic.class);
+             LocationList.LocationListStatic locations = gson.fromJson(fileReader, LocationList.LocationListStatic.class);
              //NEEDED TO MAKE THE DATA STATIC, DO NOT REMOVE
              locations.setStatic();
              System.out.println("Loaded Locations");
@@ -91,7 +85,6 @@ public class Server {
             JsonObject rootObj = (JsonObject)jsonParser.parse(fileReader);
             JsonArray nameArr = (JsonArray)rootObj.get("data");
             FirstNameList.firstNameStatic fList = new FirstNameList.firstNameStatic(nameArr);
-           // fileReader.close();
             System.out.println("Loaded First Names");
 
         } catch (FileNotFoundException ex) {
@@ -126,7 +119,6 @@ public class Server {
             System.out.println("File could not be find in setupDataLastName");
             ex.printStackTrace();
         }
-
 
     }
 

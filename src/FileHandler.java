@@ -13,11 +13,8 @@ public class FileHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        boolean success = false;
-
         try {
-            if (exchange.getRequestMethod().toLowerCase().equals("get")){
-                String filePath;
+            if (exchange.getRequestMethod().equalsIgnoreCase("get")){
                 String urlPath = exchange.getRequestURI().toString();
 
                 //Return the index.html (main)
@@ -43,6 +40,18 @@ public class FileHandler implements HttpHandler {
                 else if (urlPath.equals("/favicon.jpg")){
                     checkFile(urlPath, exchange);
                 }
+                //Return 404 Page
+                else if (urlPath.equals("/HTML/404.html")){
+                    checkFile(urlPath, exchange);
+                }
+                else {
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
+                    String filePathFail = "web/HTML/404.html";
+                    File newFileFail = new File(filePathFail);
+                    OutputStream resBody = exchange.getResponseBody();
+                    Files.copy(newFileFail.toPath(), resBody);
+                    exchange.getResponseBody().close();
+                }
 
             }
         }
@@ -66,21 +75,6 @@ public class FileHandler implements HttpHandler {
             resBody.close();
 
         }
-        else {
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
-            exchange.getResponseBody().close();
-        }
-
     }
-
-    //ONLY ACCEPT GET REQUEST
-
-    //IF URLPATH IS NULL OR / SET URLPATH TO /INDEX.HTML
-    //STRING URLPATH HTTPEXCHANGE.GETREQUESTURI().TOSTRING());
-    //String Filepath = "web" +urlpath;
-    //Return a 404 if file not found or if it does not exisst
-    //If it does exsist read the file and write it to the HTTPEXAHNGE output stream
-    //OutputStream reBody = exhange.getRepsoneBdoy();
-    //Files.copy(file.toPath(), respBody);
 
 }

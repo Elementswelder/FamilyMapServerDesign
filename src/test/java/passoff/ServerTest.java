@@ -875,6 +875,7 @@ public class ServerTest {
      * All Event
      * All Person
      */
+
     @Test
     @DisplayName("Load Valid Info Test")
     public void testValidLoadInfo(TestInfo testInfo) {
@@ -920,6 +921,7 @@ public class ServerTest {
      * All Event
      * All Person
      */
+
     @Test
     @DisplayName("Persistence Test")
     public void testPersistence(TestInfo testInfo) {
@@ -967,6 +969,8 @@ public class ServerTest {
 
 
 
+
+
     /**
      * Required API calls:
      * Load
@@ -975,6 +979,8 @@ public class ServerTest {
      * (Partial) All Person
      * (Partial) All Event
      */
+
+
     @Test
     @DisplayName("Clear Test")
     public void testClear(TestInfo testInfo) {
@@ -1014,6 +1020,7 @@ public class ServerTest {
             fail(e.getMessage());
         }
     }
+
 
     /**
      * Required API calls:
