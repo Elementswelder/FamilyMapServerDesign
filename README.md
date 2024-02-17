@@ -1,6 +1,6 @@
 # FamilyMap Server
 
-A server connection for the family map client, generates dummy data for each user that signs up.
+A server connection for the family map client.
 
 General Instructions:
 1.	Open IntelliJ.
